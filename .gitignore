@@ -338,4 +338,4 @@ bettings/media/
 .pytest_cache/
 
 .idea/
-test.py
+.test.py
