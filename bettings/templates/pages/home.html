@@ -1,1 +1,5 @@
 {% extends "base.html" %}
+
+{% block content %}
+  <a class="btn btn-outline-primary" href="{% url 'tournaments:list' %}">Show all tournaments</a>
+{% endblock %}

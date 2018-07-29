@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block jshead %}
+  <script type="text/javascript" src="{% static 'js/sorttable.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/sorttable.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h1>List of <a href="{% url 'tournaments:list' %}">Tournaments</a></h1>
+  <form id="search_form" method="get" action="{% url 'tournaments:list' %}">
+    {% csrf_token %}
+    {{ search_form }}
+    <input class="btn btn-primary" type="submit" value="Search">
+  </form>
+  <br>
+  <table class="sortable table table-bordered table-hover table-striped">
+    <thead>
+    <tr>
+      <th class="header" scope="col">#</th>
+      <th class="header" scope="col">Name</th>
+      <th class="header" scope="col" width="150">Start Date</th>
+      <th class="header" scope="col" width="150">End Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tournament in tournaments %}
+      <tr>
+        <th scope="row">{{ forloop.counter }}</th>
+        <td><a href="{% url 'tournaments:match_list' tournament.pk %}">{{ tournament.name }}</a></td>
+        <td>{{ tournament.start_date|date:'Y-m-d' }}</td>
+        <td>{{ tournament.end_date|date:'Y-m-d' }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% include 'includes/pagination.html' %}
+{% endblock %}
