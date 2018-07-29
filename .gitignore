@@ -338,4 +338,5 @@ bettings/media/
 .pytest_cache/
 
 .idea/
-.test.py
+test.py
+bettings/tournaments/populate_data.py
