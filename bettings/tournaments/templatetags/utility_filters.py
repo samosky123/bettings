@@ -1,3 +1,4 @@
+import re
 from django import template
 
 register = template.Library()
@@ -39,3 +40,12 @@ def display_result_filter(match_result):
         return "{} - {}".format(match_result.home_goals, match_result.guest_goals)
     else:
         return "-- : --"
+
+
+@register.filter(name="remove_page")
+def get_url_with_query_paging(url):
+    url = str(url)
+    url = re.sub("&page=\d+", "", url, 1)
+    if "?" not in url:
+        url += "?"
+    return url

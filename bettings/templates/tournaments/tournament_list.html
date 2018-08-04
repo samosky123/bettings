@@ -13,11 +13,28 @@
 {% endblock %}
 
 {% block content %}
-  <h1>List of <a href="{% url 'tournaments:list' %}">Tournaments</a></h1>
+  <h1>List of Tournaments</h1>
   <form id="search_form" method="get" action="{% url 'tournaments:list' %}">
-    {% csrf_token %}
-    {{ search_form }}
-    <input class="btn btn-primary" type="submit" value="Search">
+    <div class="row">
+      <div class="col">
+        <label>Name</label>
+        <input type="text" name="name" {% if name %}value="{{ name }}"{% endif %}>
+      </div>
+      <div class="col">
+        <label>Start date</label>
+        <input type="date" name="start_date" {% if start_date %}value="{{ start_date }}"{% endif %}>
+      </div>
+      <div class="col">
+        <label>End date</label>
+        <input type="date" name="end_date" {% if end_date %}value="{{ end_date }}"{% endif %}>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+      <div class="col">
+        <a class="btn btn-outline-primary" href="{% url 'tournaments:list' %}">Reset</a>
+      </div>
+    </div>
   </form>
   <br>
   <table class="sortable table table-bordered table-hover table-striped">

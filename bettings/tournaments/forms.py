@@ -1,6 +1,5 @@
 import datetime
 import logging
-
 from django import forms
 from django.utils import timezone
 
@@ -52,13 +51,3 @@ class MatchCreateForm(forms.ModelForm):
     class Meta:
         model = Match
         fields = "__all__"
-
-
-class TournamentSearchForm(forms.Form):
-    name = forms.CharField(required=False)
-    start_date = forms.DateField(required=False, widget=forms.TextInput(attrs={"type": "date"}))
-    end_date = forms.DateField(required=False, widget=forms.TextInput(attrs={"type": "date"}))
-
-
-class MatchSearchForm(forms.Form):
-    start_time = forms.DateTimeField(required=False, widget=forms.TextInput(attrs={"type": "datetime-local"}))

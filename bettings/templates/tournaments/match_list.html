@@ -12,11 +12,34 @@
 
 {% block content %}
   <a href="{% url 'tournaments:list' %}">Back to list of tournaments</a>
-  <h1>List of matches in <a href="{% url 'tournaments:match_list' tournament.pk %}">{{ tournament }}</a></h1>
+  <h1>List of matches in {{ tournament }}</h1>
   <form id="search_form" method="get" action="{% url 'tournaments:match_list' tournament.pk %}">
-    {% csrf_token %}
-    {{ search_form }}
-    <input class="btn btn-primary" type="submit" value="Search">
+    <div class="row">
+      <div class="col">
+        <label>Start date</label>
+        <input type="date" name="start_date" {% if start_date %}value="{{ start_date }}"{% endif %}>
+      </div>
+      <div class="col">
+        <label>End date</label>
+        <input type="date" name="end_date" {% if end_date %}value="{{ end_date }}"{% endif %}>
+      </div>
+      <div class="col">
+        <label>Team</label>
+        <select name="team_id">
+          <option disabled selected value>Select a team</option>
+          {% for team in teams %}
+            <option value="{{ team.pk }}" {% if team_id == team.pk %}selected{% endif %}>{{ team }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col">
+        <button class="btn btn-primary" type="submit">Search</button>
+        <a class="btn btn-outline-primary" href="{% url 'tournaments:match_list' tournament.pk %}?start_date={% now 'Y-m-d' %}">Available Matches</a>
+      </div>
+      <div class="col">
+        <a class="btn btn-outline-primary" href="{% url 'tournaments:match_list' tournament.pk %}">Reset</a>
+      </div>
+    </div>
   </form>
   <br/>
   <table class="sortable table table-bordered table-hover table-striped">
