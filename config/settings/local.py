@@ -64,7 +64,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'standard': {
-            'format': "%(asctime)s | %(levelname)s | %(name)s:%(lineno)d: %(message)s",
+            'format': "%(asctime)s | %(levelname)s | %(name)s: %(message)s",
         },
     },
     'handlers': {
@@ -73,18 +73,24 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'standard'
         },
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'maxBytes': 100000,
-            'backupCount': 7,
-            'filename': str(APPS_DIR.path("betting.log")),
-            'formatter': 'standard',
-        },
     },
     'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'WARN',
+        },
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
         'bettings.tournaments': {
-            'handlers': ['console', 'file', ],
+            'handlers': ['console', ],
+            'level': 'DEBUG'
+        },
+        'bettings.bets': {
+            'handlers': ['console', ],
             'level': 'DEBUG'
         },
     }

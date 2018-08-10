@@ -77,21 +77,20 @@ class MatchListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        tournament = get_object_or_404(Tournament, pk=self.kwargs.get("tournament_pk"))
-        last_bet_time = timezone.make_aware(datetime.datetime.now() + datetime.timedelta(minutes=30))
-        matches = tournament.matches.filter(tournament=tournament).annotate(
+        self.tournament = get_object_or_404(Tournament, pk=self.kwargs.get("tournament_pk"))
+        last_bet_time = timezone.now() + datetime.timedelta(minutes=30)
+        matches = self.tournament.matches.filter(tournament=self.tournament).annotate(
             can_bet=Case(When(start_time__gte=last_bet_time, result=None, then=Value(True)),
                          default=Value(False),
                          output_field=BooleanField()))
         return matches.order_by("start_time")
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        tournament = get_object_or_404(Tournament, pk=self.kwargs.get("tournament_pk"))
         context = super().get_context_data(**kwargs)
-        context["tournament"] = tournament
+        context["tournament"] = self.tournament
         context["start_date"] = self.filter_start_date
         context["end_date"] = self.filter_end_date
-        context["teams"] = list(tournament.teams.all())
+        context["teams"] = list(self.tournament.teams.all())
         if self.filter_team_id:
             context["team_id"] = int(self.filter_team_id)
         return context
@@ -101,13 +100,14 @@ class MatchListView(ListView):
         self.filter_start_date = request.GET.get("start_date")
         self.filter_end_date = request.GET.get("end_date")
         self.filter_team_id = request.GET.get("team_id")
-        log_search = "Get all match"
+        tournament_pk = self.kwargs.get("tournament_pk")
+        log_search = "Get all match of tournament [{}]".format(tournament_pk)
         if self.filter_start_date:
             try:
                 time = datetime.datetime.strptime(self.filter_start_date, "%Y-%m-%d")
             except ValueError:
                 logger.error("Cannot parse start date string [{}] with format [%Y-%m-%d]".format(self.filter_start_date))
-                return redirect(reverse("tournaments:match_list", kwargs={"tournament_pk": self.kwargs.get("tournament_pk")}))
+                return redirect(reverse("tournaments:match_list", kwargs={"tournament_pk": tournament_pk}))
             log_search += ", by start date after [{}]".format(time)
             queryset = queryset.filter(start_time__gte=timezone.make_aware(time))
         if self.filter_end_date:
@@ -115,7 +115,7 @@ class MatchListView(ListView):
                 time = datetime.datetime.strptime(self.filter_end_date, "%Y-%m-%d")
             except ValueError:
                 logger.error("Cannot parse end date string [{}] with format [%Y-%m-%d]".format(self.filter_end_date))
-                return redirect(reverse("tournaments:match_list", kwargs={"tournament_pk": self.kwargs.get("tournament_pk")}))
+                return redirect(reverse("tournaments:match_list", kwargs={"tournament_pk": tournament_pk}))
             log_search += ", by end date before [{}]".format(time)
             queryset = queryset.filter(start_time__lte=timezone.make_aware(time))
         if self.filter_team_id:

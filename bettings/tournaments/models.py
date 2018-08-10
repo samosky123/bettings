@@ -53,6 +53,9 @@ class Match(TimestampedModel):
     def __str__(self):
         return "{} - {} in {}".format(self.home, self.guest, self.tournament)
 
+    def has_result(self):
+        return hasattr(self, "result") and self.result is not None
+
 
 class MatchResult(TimestampedModel):
     match = models.OneToOneField(Match, on_delete=models.CASCADE, related_name="result")
@@ -60,4 +63,4 @@ class MatchResult(TimestampedModel):
     guest_goals = models.PositiveIntegerField()
 
     def __str__(self):
-        return "{} {}-{} {}".format(self.match.home, self.home_goals, self.match.guest, self.guest_goals)
+        return "{} {}-{} {}".format(self.match.home, self.home_goals, self.guest_goals, self.match.guest)

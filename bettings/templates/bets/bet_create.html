@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load i18n crispy_forms_tags utility_filters %}
+
+{% block title %}{% trans "Make a new bet" %}{% endblock %}
+
+{% block content %}
+  <h1>Make a new Bet</h1>
+
+  <table class="sortable table table-bordered table-hover table-striped">
+    <thead>
+    <tr>
+      <th scope="col">Tournament</th>
+      <th scope="col">Start time</th>
+      <th scope="col">Home</th>
+      <th scope="col"></th>
+      <th scope="col">Odds</th>
+      <th scope="col"></th>
+      <th scope="col">Guest</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><a href="{% url 'tournaments:match_list' tournament.pk %}">{{ tournament }}</a></td>
+      <td>{{ match.start_time|date:'Y-m-d H:i' }}</td>
+      <td>{{ match.home }}</td>
+      <td>
+        {% if match.home.symbol %}
+          <img src="{{ match.home.symbol.url }}" class="rounded" width="40" height="30">
+        {% endif %}
+      </td>
+      <td>{{ match.odds|display_odds|safe }}</td>
+      <td>
+        {% if match.guest.symbol %}
+          <img src="{{ match.guest.symbol.url }}" class="rounded" width="40" height="30">
+        {% endif %}
+      </td>
+      <td>{{ match.guest }}</td>
+    </tr>
+    </tbody>
+  </table>
+  <form method="post" action="{% url 'bets:create' match.pk %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" type="submit">Bet this match</button>
+    <a class="btn btn-outline-primary" href="{% url 'tournaments:match_list' tournament.pk %}">Cancel</a>
+  </form>
+{% endblock %}
+

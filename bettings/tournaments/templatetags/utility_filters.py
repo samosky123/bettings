@@ -18,7 +18,7 @@ def get_fraction_html(value):
 @register.filter(name="display_odds")
 def display_odds_filter(value: float):
     if value == 0:
-        return "0 : 0"
+        return "0:0"
     else:
         positive_value = abs(value)
         whole = int(positive_value)
@@ -26,12 +26,12 @@ def display_odds_filter(value: float):
         fraction_html = get_fraction_html(fraction)
         if value > 0:
             if whole == 0:
-                return "0 : {}".format(fraction_html)
-            return "0 : {}{}".format(whole, fraction_html)
+                return "0:{}".format(fraction_html)
+            return "0:{}{}".format(whole, fraction_html)
         else:
             if whole == 0:
-                return "{} : 0".format(fraction_html)
-            return "{}{} : 0".format(whole, fraction_html)
+                return "{}:0".format(fraction_html)
+            return "{}{}:0".format(whole, fraction_html)
 
 
 @register.filter(name="display_result")

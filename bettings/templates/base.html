@@ -1,4 +1,4 @@
-{% load static i18n %}<!DOCTYPE html>
+{% load static i18n tz %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -67,6 +67,7 @@
           </button>
           <div class="dropdown-menu dropdown-menu-right">
             <a class="dropdown-item" href="{% url 'users:detail' request.user.username %}">My Profile</a>
+            <a class="dropdown-item" href="{% url 'bets:my_bets' %}">My bets</a>
             <a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a>
           </div>
         </div>
@@ -79,23 +80,23 @@
 </div>
 
 <div class="container">
+  {% localtime on %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
 
-  {% if messages %}
-    {% for message in messages %}
-      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
+    {% block content %}
+      <p>Use this document as a way to quick start any new project.</p>
+    {% endblock content %}
 
-  {% block content %}
-    <p>Use this document as a way to quick start any new project.</p>
-  {% endblock content %}
+    </div> <!-- /container -->
 
-</div> <!-- /container -->
+    {% block modal %}
 
-{% block modal %}
-
-{% endblock modal %}
-
+    {% endblock modal %}
+  {% endlocaltime %}
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"

@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 
-{% load tz static utility_filters %}
+{% load static utility_filters %}
+
+{% block title %}
+  List of matches in tournament
+{% endblock %}
 
 {% block jshead %}
   <script type="text/javascript" src="{% static 'js/sorttable.js' %}"></script>
@@ -60,7 +64,7 @@
     {% for match in matches %}
       <tr>
         <th scope="row">{{ forloop.counter }}</th>
-        <td>{{ match.start_time|localtime|date:'Y-m-d H:i:s' }}</td>
+        <td>{{ match.start_time|date:'Y-m-d H:i' }}</td>
         <td>{{ match.home }}</td>
         <td>
           {% if match.home.symbol %}
@@ -76,9 +80,9 @@
         <td>{{ match.guest }}</td>
         <td>
           {% if match.can_bet %}
-            <a class="btn btn-primary" href="#">Bet this match</a>
+            <a class="btn btn-primary" href="{% url 'bets:create' match.pk %}">Bet this match</a>
           {% else %}
-            <a class="btn btn-outline-primary disabled">Time out</a>
+            <a class="btn btn-outline-secondary disabled">Time out</a>
           {% endif %}
         </td>
         <td>{{ match.result|display_result|safe }}</td>

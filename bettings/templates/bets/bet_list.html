@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% load static utility_filters %}
+
+{% block title %}
+  My bets
+{% endblock %}
+
+{% block jshead %}
+  <script type="text/javascript" src="{% static 'js/sorttable.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/sorttable.css' %}">
+{% endblock %}
+
+{% block content %}
+  <h1>My Bets</h1>
+  <table class="sortable table table-bordered table-hover table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Tournament</th>
+      <th scope="col">Start time</th>
+      <th scope="col">Home</th>
+      <th scope="col">Odds</th>
+      <th scope="col">Guest</th>
+      <th scope="col">Bet on</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Bet at</th>
+      <th scope="col">Action</th>
+      <th scope="col">Result</th>
+      <th scope="col">Balance</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bet in bets %}
+      <tr>
+        {% with bet.match as match %}
+          <td>{{ forloop.counter }}</td>
+          <td><a href="{% url 'tournaments:match_list' match.tournament.pk %}">{{ match.tournament }}</a></td>
+          <td>{{ match.start_time|date:'Y-m-d H:i' }}</td>
+          <td>
+            {% if match.odds > 0 %}
+              <i>{{ match.home }}</i>
+            {% else %}
+              {{ match.home }}
+            {% endif %}
+          </td>
+          <td>{{ match.odds|display_odds|safe }}</td>
+          <td>
+            {% if match.odds < 0 %}
+              <i>{{ match.guest }}</i>
+            {% else %}
+              {{ match.guest }}
+            {% endif %}
+          </td>
+          <td><b>{{ bet.choice }}</b></td>
+          <td>{{ bet.amount }}</td>
+          <td>{{ bet.modified_at|date:'Y-m-d H:i:s' }}</td>
+          <td>
+            {% if bet.can_modify %}
+              <a class="btn btn-outline-primary" href="{% url 'bets:update' bet.pk %}">Update</a>
+              <a class="btn btn-outline-danger" href="{% url 'bets:delete' bet.pk %}">Delete</a>
+            {% else %}
+              <a class="btn btn-outline-secondary disabled">Time out</a>
+            {% endif %}
+          </td>
+          <td>{{ match.result|display_result|safe }}</td>
+          <td>{{ bet.amount }}</td>
+        {% endwith %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% include 'includes/pagination.html' %}
+{% endblock %}
