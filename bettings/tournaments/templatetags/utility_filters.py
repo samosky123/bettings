@@ -49,3 +49,13 @@ def get_url_with_query_paging(url):
     if "?" not in url:
         url += "?"
     return url
+
+
+@register.filter(name="display_profit")
+def display_profit_html(value):
+    if value == 0:
+        return """<b>{}</b>""".format(value)
+    elif value > 0:
+        return """<b><font color="blue">+{}</font></b>""".format(value)
+    else:
+        return """<b><font color="red">{}</font></b>""".format(value)

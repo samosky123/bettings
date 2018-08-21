@@ -78,12 +78,7 @@ LOGGING = {
         'django': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'WARN',
-        },
-        'django.db.backends': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': False,
+            'level': 'INFO',
         },
         'bettings.tournaments': {
             'handlers': ['console', ],

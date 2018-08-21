@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 class BetListView(LoginRequiredMixin, ListView):
     model = Bet
     context_object_name = 'bets'
+    paginate_by = 20
     template_name = "bets/bet_list.html"
-    paginate_by = 10
 
     def get_queryset(self):
         logger.info("Getting all bet of user [{}]".format(self.request.user.pk))
@@ -31,7 +31,7 @@ class BetListView(LoginRequiredMixin, ListView):
             can_modify=Case(When(match__start_time__gte=modify_time, match__result=None, then=Value(True)),
                             default=Value(False),
                             output_field=BooleanField()))
-        return queryset.order_by("-modified_at")
+        return queryset.order_by("match__start_time")
 
 
 class BetCreateView(LoginRequiredMixin, CreateView):
@@ -156,3 +156,15 @@ class BetDeleteView(LoginRequiredMixin, DeleteView):
             raise InvalidRequestException(ErrorResponse.BET_EXPIRED_TIME)
         logger.info("User [{}] deleted bet [{}] successfully".format(self.request.user.pk, bet.pk))
         return self.delete(request, *args, **kwargs)
+
+
+class BetResultView(LoginRequiredMixin, ListView):
+    model = Bet
+    context_object_name = "bets"
+    paginate_by = 20
+    template_name = "bets/bet_result.html"
+
+    def get_queryset(self):
+        logger.info("Getting all bet result of user [{}]".format(self.request.user.pk))
+        queryset = Bet.objects.filter(user=self.request.user, result__isnull=False)
+        return queryset.order_by("match__start_time")
